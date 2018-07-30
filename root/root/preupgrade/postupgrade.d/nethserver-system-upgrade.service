@@ -1,0 +1,19 @@
+[Unit]
+Description=Upgrade NethServer configuration from previous major release
+Documentation=https://github.com/nethserver/nethserver-upgrade-tool
+ConditionPathExists=/root/preupgrade
+After=network-online.target
+DefaultDependencies=false
+Conflicts=shutdown.target
+RefuseManualStart=true
+RefuseManualStop=true
+
+[Service]
+Type=oneshot
+ExecStart=/sbin/e-smith/restore-config --no-reinstall
+ExecStart=/bin/rm -f /var/spool/upgrade-boot
+ExecStart=/usr/bin/systemctl isolate --no-block multi-user.target
+ExecStart=/bin/rm -rf /root/preupgrade
+
+[Install]
+WantedBy=multi-user.target

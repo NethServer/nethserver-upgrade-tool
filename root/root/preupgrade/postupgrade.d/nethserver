@@ -1,0 +1,53 @@
+#!/bin/bash
+
+#
+# Copyright (C) 2018 Nethesis S.r.l.
+# http://www.nethesis.it - nethserver@nethesis.it
+#
+# This script is part of NethServer.
+#
+# NethServer is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or any later version.
+#
+# NethServer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with NethServer.  If not, see COPYING.
+#
+
+echo "[INFO] Apply .rpmnew files"
+for F in $(find / -type f -name '*.rpmnew'); do 
+    mv -vf "${F}" "${F%%.rpmnew}"
+done
+
+echo "[INFO] Remove .rpmsave files"
+find / -type f -name '*.rpmsave' -delete
+
+echo "[INFO] Disable network service at first boot"
+rm -vf /etc/sysconfig/network
+
+echo "[INFO] Use new kernel naming rules for network interfaces"
+rm -vf /etc/udev/rules.d/70-persistent-net.rules
+
+if [[ -d /var/lib/ldap ]]; then
+    echo "[INFO] Remove OpenLDAP databases"
+    find /var/lib/ldap -type f -delete
+fi
+
+if [[ -f ./pgpsigs.sed ]]; then
+    rpm -qa --qf "%|DSAHEADER?{%{DSAHEADER:pgpsig}}:{%|RSAHEADER?{%{RSAHEADER:pgpsig}}:{(none}|}| %{NVRA}\n" | cut -d' ' -f 10,11 | sed -n -f ./pgpsigs.sed >pkgcleanup.list
+    echo "[INFO] Cleanup obsolete packages" $(<pkgcleanup.list)
+    rpm -e --nodeps $(<pkgcleanup.list)
+fi
+
+# Install and enable the upgrade service at first boot:
+cp -vf ./nethserver-system-upgrade.service /etc/systemd/system/
+systemctl --root=/ enable nethserver-system-upgrade.service
+
+
+

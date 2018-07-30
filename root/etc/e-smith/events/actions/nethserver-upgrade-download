@@ -20,11 +20,21 @@
 # along with NethServer.  If not, see COPYING.
 #
 
-set -x
-
 pkglist=/var/lib/nethserver/backup/package-list
 reposet=$(/sbin/e-smith/config getprop upgrade-tool RepoSet)
-downloaddir=/var/lib/nethserver-upgrade-tool
+yumugroot=/var/lib/nethserver-upgrade-tool
+postupgraded=/root/preupgrade/postupgrade.d
+
+if [[ ! -d ${postupgraded} ]]; then
+    echo "[ERROR] The directory ${postupgraded} can't be found. Reinstall nethserver-upgrade-tool."
+    exit 1
+fi
+
+# Mark all known RPM signatures for upgrade/removal -- Field 11 is for ns6 only:
+rpm -qa --qf "%|DSAHEADER?{%{DSAHEADER:pgpsig}}:{%|RSAHEADER?{%{RSAHEADER:pgpsig}}:{(none}|}| %{NVRA}\n" | cut -d' ' -f 11 | sort | uniq | sed '/^$/ d ; s,^,/, ; s,$,/ {s/^.* //;p},'  > ${postupgraded}/pgpsigs.sed
+
+# Save the MAC/NIC assignment:
+/usr/libexec/nethserver/nic-info > ${postupgraded}/nicinfo_old.list
 
 /sbin/e-smith/backup-config
 if [[ $? != 0 || ! -f ${pkglist} ]]; then
@@ -34,9 +44,14 @@ fi
 
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-${reposet}bundle
 
-redhat-upgrade-tool --network 7 --force --enablerepo=${reposet}-\*
+redhat-upgrade-tool --network 7 --instrepo=${reposet}-instrepo --force --enablerepo=${reposet}-\*
+if [[ $? != 0 ]]; then
+    echo "[ERROR] the redhat-upgrade tool failed"
+    exit 1
+fi
 
-rm -rf ${downloaddir}
-mkdir ${downloaddir}
-yum -y --downloadonly --downloaddir ${downloaddir} --installroot=${downloaddir} --disablerepo=\* --enablerepo=${reposet}-\* install @centos-minimal @nethserver-iso $(grep ^nethserver ${pkglist})
+cd /var/lib/system-upgrade
+yum -y --downloadonly --downloaddir . --installroot=${yumugroot} --disablerepo=\* --enablerepo=${reposet}-\* install @centos-minimal @nethserver-iso $(grep ^nethserver ${pkglist})
+find . -name '*.rpm' -printf '%f\n' > package.list
 
+echo "[INFO] $(wc -l <package.list) packages ready for the upgrade. Reboot to proceed!"
