@@ -10,10 +10,15 @@ RefuseManualStop=true
 
 [Service]
 Type=oneshot
-ExecStart=/sbin/e-smith/restore-config --no-reinstall
-ExecStart=/bin/rm -f /var/spool/upgrade-boot
-ExecStart=/usr/bin/systemctl isolate --no-block multi-user.target
-ExecStart=/bin/rm -rf /root/preupgrade
+ExecStart=/bin/bash /var/tmp/rename-interfaces.sh
+ExecStart=/usr/bin/chmod -c +x /sbin/e-smith/nethserver-config-network
+ExecStart=/sbin/e-smith/signal-event pre-restore-config
+ExecStart=-/sbin/e-smith/signal-event post-restore-config
+ExecStart=/usr/bin/systemctl enable shorewall.service nethserver-config-network.service
+ExecStart=/bin/rm -vrf \
+    /root/preupgrade \
+    /var/tmp/rename-interfaces.sh \
+    /etc/systemd/system/nethserver-system-upgrade.service
 
 [Install]
 WantedBy=multi-user.target
