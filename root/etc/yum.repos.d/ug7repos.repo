@@ -4,9 +4,10 @@
 
 [ug7-instrepo]
 name=Upgrade kernel repository
-baseurl=http://192.168.122.5/ns6upgrade
+baseurl=http://mirror.nethserver.org/ns6upgrade/
 enabled=0
-gpgcheck=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ug7bundle
 http_caching=none
 
 [ug7-base]
