@@ -22,7 +22,7 @@
 
 pkglist=/var/lib/nethserver/backup/package-list
 reposet=$(/sbin/e-smith/config getprop upgrade-tool RepoSet)
-yumugroot=/var/lib/nethserver-upgrade-tool
+yumugroot=/var/tmp/nethserver-upgrade-tool
 postupgraded=/root/preupgrade/postupgrade.d
 
 if [[ ! -d ${postupgraded} ]]; then
@@ -64,8 +64,14 @@ packages=$(sed -r \
    -e '/^nethserver-ipsec$/d' \
 /var/lib/nethserver/backup/package-list | tr $'\n' ' ')
 
+rm -rf ${yumugroot}
+mkdir -p ${yumugroot}/etc/yum/vars
+mkdir -p ${yumugroot}/etc/yum.repos.d
+rsync -ai --delete /etc/yum/vars/* ${yumugroot}/etc/yum/vars
+rsync -ai --delete /etc/yum.repos.d/ ${yumugroot}/etc/yum.repos.d
+
 cd /var/lib/system-upgrade
 yum -y --downloadonly --downloaddir . --installroot=${yumugroot} --disablerepo=\* --enablerepo=${reposet}-\* install @centos-minimal @nethserver-iso ${packages}
 find . -name '*.rpm' -printf '%f\n' > package.list
 
-echo "[INFO] $(wc -l <package.list) packages ready for the upgrade. Reboot to proceed!"
+echo "[INFO] $(wc -l <package.list) packages ready for the upgrade. Reboot to proceed."
