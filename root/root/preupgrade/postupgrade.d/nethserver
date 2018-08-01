@@ -54,8 +54,7 @@ if [[ -d /etc/e-smith/events/trusted-networks-modify/templates2expand/etc/httpd/
 fi
 
 if [[ -f ./pgpsigs.sed ]]; then
-    rpm -qa --qf "%|DSAHEADER?{%{DSAHEADER:pgpsig}}:{%|RSAHEADER?{%{RSAHEADER:pgpsig}}:{(none}|}| %{NVRA}\n" | cut -d' ' -f 10-
-    rpm -qa --qf "%|DSAHEADER?{%{DSAHEADER:pgpsig}}:{%|RSAHEADER?{%{RSAHEADER:pgpsig}}:{(none}|}| %{NVRA}\n" | cut -d' ' -f 11,12 | sed -n -f ./pgpsigs.sed >pkgcleanup.list
+    rpm -qa --qf "%{NVRA} %|DSAHEADER?{%{DSAHEADER:pgpsig}}:{%|RSAHEADER?{%{RSAHEADER:pgpsig}}:{(none}|}|\n" | sed -n -f ./pgpsigs.sed >pkgcleanup.list
     echo "[INFO] Cleanup obsolete packages" $(<pkgcleanup.list)
     rpm -e --nodeps $(<pkgcleanup.list)
 fi
