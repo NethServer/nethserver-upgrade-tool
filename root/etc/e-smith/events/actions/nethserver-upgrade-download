@@ -50,8 +50,22 @@ if [[ $? != 0 ]]; then
     exit 1
 fi
 
+# Migrate packages from NS 6 to NS 7
+# See: http://docs.nethserver.org/en/v7/release_notes.html#discontinued-packages
+packages=$(sed -r \
+   -e '/^file .+ is not owned by any package/ d' \
+   -e '/^nethserver-upgrade-tool/ d' \
+   -e 's/^nethserver-vpn$/nethserver-openvpn\nnethserver-ipsec-tunnels/'  \
+   -e 's/^nethserver-collectd-web$/nethserver-cgp/' \
+   -e 's/^nethserver-fetchmail$/nethserver-getmail/' \
+   -e 's/^nethserver-snort$/nethserver-suricata/' \
+   -e 's/^nethserver-ibays$/nethserver-virtualhosts\nnethserver-samba/' \
+   -e '/^nethserver-c-icap$/d' \
+   -e '/^nethserver-ipsec$/d' \
+/var/lib/nethserver/backup/package-list | tr $'\n' ' ')
+
 cd /var/lib/system-upgrade
-yum -y --downloadonly --downloaddir . --installroot=${yumugroot} --disablerepo=\* --enablerepo=${reposet}-\* install @centos-minimal @nethserver-iso $(grep ^nethserver ${pkglist})
+yum -y --downloadonly --downloaddir . --installroot=${yumugroot} --disablerepo=\* --enablerepo=${reposet}-\* install @centos-minimal @nethserver-iso ${packages}
 find . -name '*.rpm' -printf '%f\n' > package.list
 
 echo "[INFO] $(wc -l <package.list) packages ready for the upgrade. Reboot to proceed!"
