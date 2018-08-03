@@ -30,8 +30,9 @@ if [[ ! -d ${postupgraded} ]]; then
     exit 1
 fi
 
-# Mark all known RPM signatures for upgrade/removal -- Field 11 is for ns6 only:
-rpm -qa --qf "%|DSAHEADER?{%{DSAHEADER:pgpsig}}:{%|RSAHEADER?{%{RSAHEADER:pgpsig}}:{(none}|}| %{NVRA}\n" | grep -E '[a-f0-9]{16}' -o | sort | uniq | sed '/^$/ d ; s,^,/, ; s,$,/ {s/ .*$//;p},'  > ${postupgraded}/pgpsigs.sed
+# Mark all known RPM signatures for upgrade/removal, excluding grub:
+echo '/^grub-/ d' > ${postupgraded}/pgpsigs.sed
+rpm -qa --qf "%|DSAHEADER?{%{DSAHEADER:pgpsig}}:{%|RSAHEADER?{%{RSAHEADER:pgpsig}}:{(none}|}| %{NVRA}\n" | grep -E '[a-f0-9]{16}' -o | sort | uniq | sed '/^$/ d ; s,^,/, ; s,$,/ {s/ .*$//;p},'  >> ${postupgraded}/pgpsigs.sed
 
 # Save the MAC/NIC assignment:
 /usr/libexec/nethserver/nic-info > ${postupgraded}/nicinfo_old.list
