@@ -31,7 +31,10 @@ find / -type f -name '*.rpmsave' -delete
 echo "[INFO] Disable network service at first boot"
 rm -vf /etc/sysconfig/network
 
-echo "[INFO] Use new kernel naming rules for network interfaces"
+echo "[INFO] Clean up old network configuration"
+/etc/e-smith/events/actions/interface-config-reset system-upgrade
+
+echo "[INFO] Clean up udev persistent net rules"
 rm -vf /etc/udev/rules.d/70-persistent-net.rules
 
 if [[ -d /var/lib/ldap ]]; then
