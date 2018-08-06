@@ -43,10 +43,12 @@ if [[ $? != 0 || ! -f ${pkglist} ]]; then
     exit 1
 fi
 
-/sbin/e-smith/signal-event pre-backup-data
-if [[ $? != 0 ]]; then
-    echo "[ERROR] the pre-backup-data event failed"
-    exit 1
+if [[ -d /etc/e-smith/events/pre-backup-data ]]; then
+    /sbin/e-smith/signal-event pre-backup-data
+    if [[ $? != 0 ]]; then
+        echo "[ERROR] the pre-backup-data event failed"
+        exit 1
+    fi
 fi
 
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-${reposet}bundle
