@@ -44,6 +44,11 @@ if [[ -d /var/lib/ldap ]]; then
     find /var/lib/ldap -type f -delete
 fi
 
+if [[ -d /var/lib/mysql ]]; then
+    echo "[INFO] Remove MySQL databases"
+    rm -rf /var/lib/mysql/*
+fi
+
 echo "[INFO] Install and enable the upgrade service at first boot"
 cp -vf ./*.service /etc/systemd/system/
 cp -vf ./rename-interfaces.sh /var/tmp/rename-interfaces.sh
