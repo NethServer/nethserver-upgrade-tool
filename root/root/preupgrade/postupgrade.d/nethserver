@@ -20,6 +20,8 @@
 # along with NethServer.  If not, see COPYING.
 #
 
+shopt -s nullglob
+
 echo "[INFO] Apply .rpmnew files"
 for F in $(find / -type f -name '*.rpmnew'); do 
     mv -vf "${F}" "${F%%.rpmnew}"
@@ -60,4 +62,12 @@ if [[ -f ./pgpsigs.sed ]]; then
     rpm -qa --qf "%{NVRA} %|DSAHEADER?{%{DSAHEADER:pgpsig}}:{%|RSAHEADER?{%{RSAHEADER:pgpsig}}:{(none}|}|\n" | sed -n -f ./pgpsigs.sed >pkgcleanup.list
     echo "[INFO] Cleanup obsolete packages" $(<pkgcleanup.list)
     rpm -e --nodeps $(<pkgcleanup.list)
+fi
+
+if [[ -n "$(echo /etc/e-smith/templates-custom/*)" ]]; then
+    echo "[INFO] archiving customized templates to /root/templates-custom.upgrade/"
+    mkdir -p /root/templates-custom.upgrade/
+    for P in /etc/e-smith/templates-custom/*; do
+        mv -vf "${P}" /root/templates-custom.upgrade/
+    done
 fi
