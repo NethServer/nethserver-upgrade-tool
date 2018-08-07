@@ -82,5 +82,10 @@ rsync -ai --delete /etc/yum.repos.d/ ${yumugroot}/etc/yum.repos.d
 cd /var/lib/system-upgrade
 yum -y --downloadonly --downloaddir . --installroot=${yumugroot} --disablerepo=\* --enablerepo=${reposet}-\* install @centos-minimal @nethserver-iso ${packages}
 find . -name '*.rpm' -printf '%f\n' > package.list
+rpm --nodeps --force -i --test $(</var/lib/system-upgrade/package.list)
+if [[ $? != 0 ]]; then
+    echo "[ERROR] the RPM transaction test failed"
+    exit 1
+fi
 
 echo "[INFO] $(wc -l <package.list) packages ready for the upgrade. Reboot to proceed."
