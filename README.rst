@@ -21,6 +21,19 @@ This procedure returns a NethServer 7 installation, retaining
 All the installed RPMs are upgraded/removed to conform to a NethServer 7
 installation. Access to Enterprise repositories is preserved, where applicable.
 
+Run the upgrade procedure
+-------------------------
+
+1. Run the preparation step and activate the upgrade: ``signal-event
+   nethserver-upgrade-tool-prepare``
+
+2. Reboot to run the upgrade and post-upgrade steps
+
+To deactivate the upgrade procedure and revert the preparation step, run ::
+
+    redhat-upgrade-tool --clean
+
+
 Configuration database
 ----------------------
 
@@ -129,24 +142,18 @@ of device out there.
 Copy the ``ns6upgrade/`` contents to a public web server.
 
 
-Run the upgrade procedure
--------------------------
-
-1. Run the preparation step and activate the upgrade: ``signal-event nethserver-upgrade-tool-prepare``
-2. Reboot to run the upgrade and post-upgrade steps
-
-To deactivate the upgrade procedure and revert the preparation step, run ::
-
-    redhat-upgrade-tool --clean
-
 Set upgrade breakpoints
 -----------------------
 
 Once rebooted, the upgrade step can be stopped at certain points, as documented
-in the ``redhat-upgrade-dracut`` repository. For instance, to break at the
-``upgrade-post`` hook  edit the kernel parameters at the grub prompt and add
-``rd.break=upgrade-post``. The procedure stops and a shell will is spawned.
-The procedure continues when that shell is closed.
+in the ``redhat-upgrade-dracut`` repository. 
+
+For instance, to break at the ``upgrade-post`` hook  edit the kernel parameters
+at the grub prompt and add ``rd.break=upgrade-post``. Adding that parameter
+seems to activate the "pre chroot switch" break point implicitly.
+
+When the procedure stops at a break point a shell is spawned. The procedure
+continues when that shell is closed.
 
 
 ----
