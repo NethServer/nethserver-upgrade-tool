@@ -76,3 +76,6 @@ if [[ -n "$(echo /etc/e-smith/templates-custom/*)" ]]; then
         mv -vf "${P}" /root/templates-custom.upgrade/
     done
 fi
+
+echo "[INFO] disable NetworkManager"
+systemctl --root=/ disable NetworkManager.service NetworkManager-wait-online.service
