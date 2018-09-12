@@ -1,0 +1,43 @@
+#!/bin/bash
+
+#
+# Copyright (C) 2018 Nethesis S.r.l.
+# http://www.nethesis.it - nethserver@nethesis.it
+#
+# This script is part of NethServer.
+#
+# NethServer is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or any later version.
+#
+# NethServer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with NethServer.  If not, see COPYING.
+#
+
+hasNsdc=$(/sbin/e-smith/config get nsdc)
+if [[ -z ${hasNsdc} ]]; then
+    exit 0
+fi
+
+echo "[NOTICE] Download and prepare NSDC, the local Active Directory accounts provider"
+
+set -e -o pipefail
+
+nsroot=/var/lib/machines/nsdc
+
+if [[ ! -d ${nsroot} ]]; then
+    trap "rm -rf ${nsroot} ; exit 1" ERR
+    mkdir -p ${nsroot}/etc/yum/vars
+    mkdir -p ${nsroot}/var/log/journal
+    mkdir -p ${nsroot}/etc/systemd/network
+    cp -f /etc/yum/vars/* ${nsroot}/etc/yum/vars
+    rpm --root=${nsroot} --import /etc/pki/rpm-gpg/*
+    yum -y --releasever=7 --installroot=${nsroot} install centos-release systemd-networkd bind-utils ntp
+    rm -f ${nsroot}/etc/krb5.conf
+fi
