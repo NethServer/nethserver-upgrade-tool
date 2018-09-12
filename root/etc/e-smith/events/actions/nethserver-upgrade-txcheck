@@ -1,7 +1,7 @@
-#!/usr/bin/perl
+#!/bin/bash
 
 #
-# Copyright (C) 2016 Nethesis S.r.l.
+# Copyright (C) 2018 Nethesis S.r.l.
 # http://www.nethesis.it - nethserver@nethesis.it
 #
 # This script is part of NethServer.
@@ -20,14 +20,12 @@
 # along with NethServer.  If not, see COPYING.
 #
 
-use strict;
-use esmith::Build::CreateLinks  qw(:all);
+cd /var/lib/system-upgrade || exit 1
+[[ -f package.list ]] || exit 1
+rpm --nodeps --force -i --test $(<package.list)
+if [[ $? != 0 ]]; then
+    echo "[ERROR] the RPM transaction test failed"
+    exit 1
+fi
 
-event_actions('nethserver-upgrade-tool-update', qw(
-   initialize-default-databases 00
-));
-
-event_actions('nethserver-upgrade-tool-prepare', qw(
-    nethserver-upgrade-download 30
-    nethserver-upgrade-txcheck 80
-));
+echo "[INFO] $(wc -l <package.list) packages ready for the upgrade. Reboot to proceed."
