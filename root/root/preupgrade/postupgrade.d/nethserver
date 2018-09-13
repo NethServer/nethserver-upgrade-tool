@@ -36,24 +36,12 @@ echo "[INFO] Clean up old network configuration"
 echo "[INFO] Clean up udev persistent net rules"
 rm -vf /etc/udev/rules.d/70-persistent-net.rules
 
-if [[ -d /var/lib/ldap ]]; then
-    echo "[INFO] Remove OpenLDAP databases"
-    find /var/lib/ldap -type f -delete
-fi
-
-if [[ -d /var/lib/mysql ]]; then
-    echo "[INFO] Remove MySQL databases"
-    rm -rf /var/lib/mysql/*
-fi
-
-echo "[INFO] Install and enable the upgrade service at first boot"
+echo "[INFO] Install the upgrade service at first boot"
 cp -vf ./*.service /etc/systemd/system/
 cp -vf ./rename-interfaces.sh /var/tmp/rename-interfaces.sh
-systemctl --root=/ enable nethserver-system-upgrade.service
 
 echo "[INFO] Disable udev automatic updates to networks DB"
 chmod -c -x /sbin/e-smith/nethserver-config-network
-
 
 if [[ -d /etc/e-smith/events/trusted-networks-modify/templates2expand/etc/httpd/conf.d/ ]]; then
     echo "[INFO] Fix httpd startup during trusted-networks-modify event"
@@ -85,5 +73,22 @@ fi
 echo "[INFO] Remove .rpmsave files"
 find / -type f -name '*.rpmsave' -delete
 
-echo "[INFO] disable NetworkManager"
-systemctl --root=/ disable NetworkManager.service NetworkManager-wait-online.service
+echo "[INFO] apply systemd presets"
+systemctl --root=/ preset-all
+
+echo "[INFO] Enable the upgrade service at first boot"
+systemctl --root=/ enable nethserver-system-upgrade.service
+
+if [[ -d /var/lib/ldap ]]; then
+    echo "[INFO] Remove OpenLDAP databases"
+    find /var/lib/ldap -type f -delete
+fi
+
+if [[ -d /var/lib/mysql ]]; then
+    echo "[INFO] Remove MySQL databases"
+    rm -rf /var/lib/mysql
+fi
+
+echo "[INFO] Remove chkconfig symlinks"
+find /etc/rc.d/ -type l -delete
+
