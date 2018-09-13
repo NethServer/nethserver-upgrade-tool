@@ -27,9 +27,6 @@ for F in $(find / -type f -name '*.rpmnew'); do
     mv -vf "${F}" "${F%%.rpmnew}"
 done
 
-echo "[INFO] Remove .rpmsave files"
-find / -type f -name '*.rpmsave' -delete
-
 echo "[INFO] Disable network service at first boot"
 rm -vf /etc/sysconfig/network
 
@@ -67,6 +64,14 @@ if [[ -f ./pgpsigs.sed ]]; then
     rpm -qa --qf "%{NVRA} %|DSAHEADER?{%{DSAHEADER:pgpsig}}:{%|RSAHEADER?{%{RSAHEADER:pgpsig}}:{(none}|}|\n" | sed -n -f ./pgpsigs.sed >pkgcleanup.list
     echo "[INFO] Cleanup obsolete packages" $(<pkgcleanup.list)
     rpm -e --nodeps $(<pkgcleanup.list)
+    if [[ $? != 0 ]]; then
+        for PACKAGE in $(<pkgcleanup.list); do
+            if rpm -q "${PACKAGE}" &>/dev/null ; then
+                echo "[WARNING] Forcing cleanup of obsolete package ${PACKAGE}"
+                rpm -e --nodeps --noscripts ${PACKAGE}
+            fi
+        done
+    fi
 fi
 
 if [[ -n "$(echo /etc/e-smith/templates-custom/*)" ]]; then
@@ -76,6 +81,9 @@ if [[ -n "$(echo /etc/e-smith/templates-custom/*)" ]]; then
         mv -vf "${P}" /root/templates-custom.upgrade/
     done
 fi
+
+echo "[INFO] Remove .rpmsave files"
+find / -type f -name '*.rpmsave' -delete
 
 echo "[INFO] disable NetworkManager"
 systemctl --root=/ disable NetworkManager.service NetworkManager-wait-online.service
