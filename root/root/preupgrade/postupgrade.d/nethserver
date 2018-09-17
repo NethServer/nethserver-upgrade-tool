@@ -27,9 +27,6 @@ for F in $(find / -type f -name '*.rpmnew'); do
     mv -vf "${F}" "${F%%.rpmnew}"
 done
 
-echo "[INFO] Disable network service at first boot"
-rm -vf /etc/sysconfig/network
-
 echo "[INFO] Clean up old network configuration"
 /etc/e-smith/events/actions/interface-config-reset system-upgrade
 
@@ -38,7 +35,8 @@ rm -vf /etc/udev/rules.d/70-persistent-net.rules
 
 echo "[INFO] Install the upgrade service at first boot"
 cp -vf ./*.service /etc/systemd/system/
-cp -vf ./rename-interfaces.sh /var/tmp/rename-interfaces.sh
+cp -av ./nethserver-system-upgrade /etc/e-smith/events/nethserver-system-upgrade
+find /etc/e-smith/events/nethserver-system-upgrade -type f -exec chmod +x -c '{}' \;
 
 echo "[INFO] Disable udev automatic updates to networks DB"
 chmod -c -x /sbin/e-smith/nethserver-config-network

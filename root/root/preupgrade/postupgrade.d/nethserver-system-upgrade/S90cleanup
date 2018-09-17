@@ -1,0 +1,14 @@
+#!/bin/bash
+
+
+/usr/bin/systemctl enable network.service shorewall.service nethserver-config-network.service
+
+/usr/bin/chmod -c +x /sbin/e-smith/nethserver-config-network
+
+/usr/bin/systemctl disable nethserver-system-upgrade.service
+
+/bin/rm -vrf \
+    /root/preupgrade \
+    /etc/e-smith/events/upgrade-restore-config \
+    /etc/systemd/system/nethserver-system-upgrade.service \
+    /etc/e-smith/events/nethserver-system-upgrade
