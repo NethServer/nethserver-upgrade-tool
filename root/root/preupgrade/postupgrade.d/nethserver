@@ -84,7 +84,7 @@ fi
 
 if [[ -d /var/lib/mysql ]]; then
     echo "[INFO] Remove MySQL databases"
-    rm -rf /var/lib/mysql
+    rm -rf /var/lib/mysql/*
 fi
 
 echo "[INFO] Remove chkconfig symlinks"
