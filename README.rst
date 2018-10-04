@@ -114,9 +114,15 @@ the old ones, then it runs any executable file under
 adjustments.
 
 The system is automatically rebooted and the **post-upgrade step** starts. The
-control passes to the ``nethserver-system-upgrade.service`` temporary systemd
-unit, that actually renames the network interfaces in esmith DBs, then runs
-``post-restore-config`` and ``post-restore-data`` steps.
+control passes to the ``nethserver-system-upgrade.service``, a temporary systemd
+unit which runs the ``nethserver-system-upgrade`` event. The event
+
+* renames the network interfaces in esmith DBs and applies the new network interfaces configuration selectively
+* runs the ``upgrade-restore-config`` event, which is a copy of the ``post-restore-config`` event. Some basic actions are excluded
+* runs the upgrade to Active Directory, if required
+* runs the ``post-restore-data`` event
+* runs a full ``interface-update`` event, which turns on the firewall
+* cleans up the temporary files
 
 Build the "instrepo" repository
 -------------------------------
