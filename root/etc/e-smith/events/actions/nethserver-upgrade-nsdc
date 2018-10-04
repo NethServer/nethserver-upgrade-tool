@@ -29,18 +29,41 @@ echo "[NOTICE] Download and prepare NSDC, the local Active Directory accounts pr
 
 set -e -o pipefail
 
-nsroot=/var/lib/machines/nsdc
+reposet=$(/sbin/e-smith/config getprop upgrade-tool RepoSet)
 
+rpmdir=/var/tmp/nethserver-upgrade-tool/
+yumugroot=$(mktemp -d)
+mkdir -p ${rpmdir}
+trap "rm -rf ${yumugroot}" EXIT
+trap "rm -rf ${rpmdir}" ERR
+mkdir -p ${yumugroot}/etc/yum/vars
+mkdir -p ${yumugroot}/etc/yum.repos.d
+rsync -ai --delete /etc/yum/vars/* ${yumugroot}/etc/yum/vars
+rsync -ai --delete /etc/yum.repos.d/ ${yumugroot}/etc/yum.repos.d
+
+pushd ${rpmdir}
+yumdownloader -y --installroot=${yumugroot} --disablerepo=\* --enablerepo=${reposet}-\* nethserver-dc
+rpm2cpio nethserver-dc-*.rpm | cpio -id ./usr/lib/nethserver-dc/ns-samba-\*.rpm
+popd
+
+sambarpm=$(find ${rpmdir} -type f -name 'ns-samba-*.rpm')
+if [[ ! -f "${sambarpm}" ]]; then
+    echo "[ERROR] Could not find ns-samba RPM to prepare nsdc chroot"
+    exit 1
+fi
+
+trap "rm -rf ${yumugroot} ${sambarpm}" EXIT
+
+nsroot=/var/lib/machines/nsdc
 if [[ ! -d ${nsroot} ]]; then
-    trap "rm -rf ${nsroot} ; exit 1" ERR
+    trap "rm -rf ${nsroot} ${rpmdir}" ERR
     mkdir -p ${nsroot}/etc/yum/vars
     mkdir -p ${nsroot}/var/log/journal
-    mv -f ${nsroot}/var/run/* ${nsroot}/run
-    rm -f ${nsroot}/var/run
+    mkdir -p ${nsroot}/run
     ln -sfT ../run ${nsroot}/var/run
     mkdir -p ${nsroot}/etc/systemd/network
     cp -f /etc/yum/vars/* ${nsroot}/etc/yum/vars
     rpm --root=${nsroot} --import /etc/pki/rpm-gpg/*
-    yum -y --releasever=7 --installroot=${nsroot} install centos-release systemd-networkd bind-utils ntp
+    yum -y --releasever=7 --installroot=${nsroot} install ${sambarpm} centos-release systemd-networkd bind-utils ntp
     rm -f ${nsroot}/etc/krb5.conf
 fi

@@ -10,6 +10,7 @@ Source0:        %{name}-%{version}.tar.gz
 BuildRequires:  nethserver-devtools
 Requires:       redhat-upgrade-tool
 Requires:       nethserver-backup-config
+Requires:       yum-utils
 
 %description
 Upgrade NethServer to the next major version
