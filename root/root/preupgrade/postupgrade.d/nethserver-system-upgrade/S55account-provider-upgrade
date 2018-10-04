@@ -1,0 +1,42 @@
+#!/bin/bash
+
+#
+# Copyright (C) 2018 Nethesis S.r.l.
+# http://www.nethesis.it - nethserver@nethesis.it
+#
+# This script is part of NethServer.
+#
+# NethServer is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or any later version.
+#
+# NethServer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with NethServer.  If not, see COPYING.
+#
+
+hasNsdc=$(/sbin/e-smith/config get nsdc)
+if [[ -z ${hasNsdc} ]]; then
+    echo "[NOTICE] Upgrade to Active Directory was not required"
+    exit 0
+fi
+
+ldapsearch -LLL -H ldapi:/// -x -w '' -D '' -b dc=directory,dc=nh objectClass=sambaDomain 2>/dev/null | grep -q '^sambaDomainName: '
+if [[ $? != 0 ]]; then
+    echo "[WARNING] The Samba LDAP backend cannot be upgraded to Active Directory: missing sambaDomainName attribute"
+    exit 0
+fi
+
+rpms_glob=(/var/tmp/nethserver-upgrade-tool/nethserver-dc-*.rpm)
+export NS6UPGRADE_DCRPM=${rpms_glob[-1]}
+if [[ ! -f "${NS6NS6UPGRADE_DCRPM}" ]]; then
+    echo "[ERROR] Cannot find nethserver-dc RPM to start the upgrade to Active Directory"
+    exit 1
+fi
+
+exec /sbin/e-smith/signal-event nethserver-directory-ns6upgrade

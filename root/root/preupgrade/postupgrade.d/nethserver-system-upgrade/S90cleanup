@@ -9,6 +9,7 @@
 
 /bin/rm -vrf \
     /root/preupgrade \
+    /var/tmp/nethserver-upgrade-tool \
     /etc/e-smith/events/upgrade-restore-config \
     /etc/systemd/system/nethserver-system-upgrade.service \
     /etc/e-smith/events/nethserver-system-upgrade
