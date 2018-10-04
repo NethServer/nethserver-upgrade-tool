@@ -20,6 +20,8 @@
 # along with NethServer.  If not, see COPYING.
 #
 
+set -x
+
 hasNsdc=$(/sbin/e-smith/config get nsdc)
 if [[ -z ${hasNsdc} ]]; then
     echo "[NOTICE] Upgrade to Active Directory was not required"
@@ -34,7 +36,7 @@ fi
 
 rpms_glob=(/var/tmp/nethserver-upgrade-tool/nethserver-dc-*.rpm)
 export NS6UPGRADE_DCRPM=${rpms_glob[-1]}
-if [[ ! -f "${NS6NS6UPGRADE_DCRPM}" ]]; then
+if [[ ! -f "${NS6UPGRADE_DCRPM}" ]]; then
     echo "[ERROR] Cannot find nethserver-dc RPM to start the upgrade to Active Directory"
     exit 1
 fi
