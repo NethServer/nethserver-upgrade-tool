@@ -31,7 +31,8 @@ Run the upgrade procedure
 
 To deactivate the upgrade procedure and revert the preparation step, run ::
 
-    redhat-upgrade-tool --clean
+    signal-event nethserver-upgrade-tool-reset
+
 
 
 Configuration database
