@@ -30,6 +30,8 @@ if [[ ! -d ${postupgraded} ]]; then
     exit 1
 fi
 
+/sbin/e-smith/config setprop crond status disabled
+
 # Mark all known RPM signatures for upgrade/removal, excluding grub:
 echo '/^grub-/ d' > ${postupgraded}/pgpsigs.sed
 rpm -qa --qf "%|DSAHEADER?{%{DSAHEADER:pgpsig}}:{%|RSAHEADER?{%{RSAHEADER:pgpsig}}:{(none}|}| %{NVRA}\n" | grep -E '[a-f0-9]{16}' -o | sort | uniq | sed '/^$/ d ; s,^,/, ; s,$,/ {s/ .*$//;p},'  >> ${postupgraded}/pgpsigs.sed

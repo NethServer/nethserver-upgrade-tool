@@ -24,3 +24,6 @@
 redhat-upgrade-tool --clean
 rm -rf /var/lib/machines/nsdc
 rm -rf /var/tmp/nethserver-upgrade-tool/
+
+/sbin/e-smith/config setprop crond status enabled
+
