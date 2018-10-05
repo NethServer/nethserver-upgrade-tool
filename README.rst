@@ -9,14 +9,13 @@ in three steps:
 2. (upgrade) at next reboot runs the RPMs upgrade transaction, the upgrade 
    tasks, then reboots
 
-3. (post-upgrade) completes by running post-restore-config and post-restore-data
-   events
+3. (post-upgrade) completes by running the special ``nethserver-system-upgrade`` event
 
 This procedure returns a NethServer 7 installation, retaining
 
 - grub boot loader installation and configuration
 - previous partitioning, RAID and (ext4) file systems
-- LDAP accounts provider - if present
+- a running accounts provider, if at least the ns6 package nethserver-directory was installed
 
 All the installed RPMs are upgraded/removed to conform to a NethServer 7
 installation. Access to Enterprise repositories is preserved, where applicable.
@@ -42,8 +41,19 @@ Configuration database
 
     upgrade-tool=configuration
         RepoSet=ug7
+        SssdRealm=ad.example.com
+        NsdcIpAddress=192.168.122.33
+        NsdcBridge=br0
 
 * ``RepoSet``, the YUM repositories name prefix for the upgrade
+
+* ``SssdRealm``, the Active Directory domain name (realm) to assign during the
+  post-upgrade step
+
+* ``NsdcIpAddress``, the free IP address a green network to assign to the
+  NSDC container
+
+* ``NsdcBridge``, the bridge interface name required by the NSDC container
 
 YUM repositories for the upgrade
 --------------------------------
@@ -124,6 +134,23 @@ unit which runs the ``nethserver-system-upgrade`` event. The event
 * runs the ``post-restore-data`` event
 * runs a full ``interface-update`` event, which turns on the firewall
 * cleans up the temporary files
+
+Accounts provider
+-----------------
+
+If the system has the ``smbd`` service running with role PDC or WS, the
+automatic transition to Active Directory can be enabled before starting the
+upgrade procedure. The post-upgrade step will set up and start the Samba Active
+Directory container (NSDC).
+
+To enable the automatic upgrade to Active Directory set the three
+``upgrade-tool`` props in configuration database: ``NsdcIpAddress``,
+``NsdcBridge``, ``SssdRealm``. **The bridge device must be already available**.
+
+For instance, run the following command, providing the required information: ::
+
+  config setprop upgrade-tool NsdcIpAddress 192.168.122.33 NsdcBridge br0 SssdRealm AD.EXAMPLE.COM
+
 
 Build the "instrepo" repository
 -------------------------------

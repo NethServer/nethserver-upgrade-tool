@@ -20,16 +20,17 @@
 # along with NethServer.  If not, see COPYING.
 #
 
-hasNsdc=$(/sbin/e-smith/config get nsdc)
-if [[ -z ${hasNsdc} ]]; then
+nsdcIpAddress=$(/sbin/e-smith/config getprop upgrade-tool NsdcIpAddress)
+nsdcBridge=$(/sbin/e-smith/config getprop upgrade-tool NsdcBridge)
+sssdRealm=$(/sbin/e-smith/config getprop upgrade-tool SssdRealm)
+reposet=$(/sbin/e-smith/config getprop upgrade-tool RepoSet)
+if [[ -z ${nsdcIpAddress} || -z ${nsdcBridge} || -z ${sssdRealm} || -z ${reposet} ]]; then
     exit 0
 fi
 
 echo "[NOTICE] Download and prepare NSDC, the local Active Directory accounts provider"
 
 set -e -o pipefail
-
-reposet=$(/sbin/e-smith/config getprop upgrade-tool RepoSet)
 
 rpmdir=/var/tmp/nethserver-upgrade-tool/
 yumugroot=$(mktemp -d)

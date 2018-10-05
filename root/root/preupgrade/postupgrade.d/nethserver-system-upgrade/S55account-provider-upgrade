@@ -20,10 +20,10 @@
 # along with NethServer.  If not, see COPYING.
 #
 
-set -x
-
-hasNsdc=$(/sbin/e-smith/config get nsdc)
-if [[ -z ${hasNsdc} ]]; then
+nsdcIpAddress=$(/sbin/e-smith/config getprop upgrade-tool NsdcIpAddress)
+nsdcBridge=$(/sbin/e-smith/config getprop upgrade-tool NsdcBridge)
+sssdRealm=$(/sbin/e-smith/config getprop upgrade-tool SssdRealm)
+if [[ -z ${nsdcIpAddress} || -z ${nsdcBridge} || -z ${sssdRealm} ]]; then
     echo "[NOTICE] Upgrade to Active Directory was not required"
     exit 0
 fi
@@ -41,4 +41,6 @@ if [[ ! -f "${NS6UPGRADE_DCRPM}" ]]; then
     exit 1
 fi
 
+/sbin/e-smith/config setprop sssd Realm "${sssdRealm^}"
+/sbin/e-smith/config set nsdc service IpAddress "${nsdcIpAddress}" bridge "${nsdcBridge}" status disabled ProvisionType ''
 exec /sbin/e-smith/signal-event nethserver-directory-ns6upgrade
