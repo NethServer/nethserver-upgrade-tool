@@ -23,7 +23,7 @@
 shopt -s nullglob
 
 echo "[INFO] Apply .rpmnew files"
-for F in $(find / -type f -name '*.rpmnew'); do 
+for F in $(find / -path /var/lib/nethserver -prune -o -type f -name '*.rpmnew'); do
     mv -vf "${F}" "${F%%.rpmnew}"
 done
 
@@ -69,7 +69,7 @@ if [[ -n "$(echo /etc/e-smith/templates-custom/*)" ]]; then
 fi
 
 echo "[INFO] Remove .rpmsave files"
-find / -type f -name '*.rpmsave' -delete
+find / -path /var/lib/nethserver -prune -o -type f -name '*.rpmsave' -delete
 
 echo "[INFO] apply systemd presets"
 systemctl --root=/ preset-all
