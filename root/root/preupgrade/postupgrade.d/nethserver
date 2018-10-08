@@ -71,6 +71,9 @@ fi
 echo "[INFO] Remove .rpmsave files"
 find / -path /var/lib/nethserver -prune -o -type f -name '*.rpmsave' -delete
 
+echo "[INFO] Remove chkconfig symlinks"
+find /etc/rc.d/ -type l -delete
+
 echo "[INFO] apply systemd presets"
 systemctl --root=/ preset-all
 
@@ -86,7 +89,3 @@ if [[ -d /var/lib/mysql ]]; then
     echo "[INFO] Remove MySQL databases"
     rm -rf /var/lib/mysql/*
 fi
-
-echo "[INFO] Remove chkconfig symlinks"
-find /etc/rc.d/ -type l -delete
-
