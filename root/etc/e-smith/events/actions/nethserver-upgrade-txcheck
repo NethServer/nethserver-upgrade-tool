@@ -20,11 +20,21 @@
 # along with NethServer.  If not, see COPYING.
 #
 
+shopt -s nullglob
+
+rspace=$(rpm --queryformat='%{SIZE} %{NAME}\n' -qp $(<package.list) /var/tmp/nethserver-upgrade-tool/*.rpm | awk '{size += $1} END{print int(size/1024)+1}')
+fspace_root=$(df -P -k / | awk 'NR==2 {print $4}')
+
+if ((fspace_root < rspace)); then
+    echo "[ERROR] not enough free disk space ($rspace/$fspace_root)" 1>&2
+    exit 1
+fi
+
 cd /var/lib/system-upgrade || exit 1
 [[ -f package.list ]] || exit 1
-rpm --nodeps --force -i --test $(<package.list)
+rpm --nodeps --force -i --test $(<package.list) /var/tmp/nethserver-upgrade-tool/*.rpm
 if [[ $? != 0 ]]; then
-    echo "[ERROR] the RPM transaction test failed"
+    echo "[ERROR] the RPM transaction test failed" 1>&2
     exit 1
 fi
 
