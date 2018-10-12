@@ -43,7 +43,7 @@ rsync -ai --delete /etc/yum/vars/* ${yumugroot}/etc/yum/vars
 rsync -ai --delete /etc/yum.repos.d/ ${yumugroot}/etc/yum.repos.d
 
 pushd ${rpmdir}
-yumdownloader -y --installroot=${yumugroot} --disablerepo=\* --enablerepo=${reposet}-\* nethserver-dc
+yumdownloader -y --installroot=${yumugroot} --disablerepo=\* --enablerepo=${reposet}-\* nethserver-dc | /usr/libexec/nethserver/ptrack-upgrade-nsdc
 rpm2cpio nethserver-dc-*.rpm | cpio -id ./usr/lib/nethserver-dc/ns-samba-\*.rpm
 popd
 

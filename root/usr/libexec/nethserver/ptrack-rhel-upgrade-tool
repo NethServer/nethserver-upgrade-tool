@@ -1,0 +1,69 @@
+#!/usr/bin/perl
+
+#
+# Copyright (C) 2018 Nethesis S.r.l.
+# http://www.nethesis.it - nethserver@nethesis.it
+#
+# This script is part of NethServer.
+#
+# NethServer is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or any later version.
+#
+# NethServer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with NethServer.  If not, see COPYING.
+#
+
+use strict;
+use NethServer::TrackerClient;
+
+my $tracker = NethServer::TrackerClient->new();
+
+my %tasks = (
+  'connecting' => $tracker->declare_task('Connecting to repositories'),
+  'image' => $tracker->declare_task('Download upgrade image'),
+  'finding' => $tracker->declare_task('Finding updates'),
+  'download' => $tracker->declare_task('Download RPMs'),
+  'transaction' => $tracker->declare_task('RPM transaction'),
+  'installing' => $tracker->declare_task('Install RPMs'),
+);
+
+$tracker->set_task_progress($tasks{'connecting'}, 0.1);
+
+open(my $in, '-') or die;
+
+my $buf='';
+my $char;
+my $repocnt = 0;
+while (read($in, $char, 1)) {
+    $buf .= $char;
+    if($char ne "\r" && $char ne "\n") {
+        next;
+    }
+
+    if($buf =~ /\/primary/) {
+        $tracker->set_task_progress($tasks{'connecting'}, (1.0/(10.0 - ($repocnt < 10 ? $repocnt : 9))));
+        $repocnt++;
+    } elsif ($buf =~ /^\.treeinfo/) {
+        $tracker->set_task_done($tasks{'connecting'}, $buf, 0);
+    } elsif ($buf =~ /(^initramfs-redhat-upgrade-tool\.img|^vmlinuz-redhat-upgrade-tool)/) {
+        $tracker->set_task_progress($tasks{'image'}, 0.5, $1);
+    } elsif ($buf =~ /^finding updates (\d+)%/) {
+        $tracker->set_task_progress($tasks{'finding'}, $1 / 100);
+    } elsif ($buf =~ /^\((\d+)\/(\d+)\): (\S+)/) {
+        $tracker->set_task_progress($tasks{'download'}, $1 / $2, $3);
+    } elsif ($buf =~ /^rpm transaction (\d+)%/) {
+        $tracker->set_task_progress($tasks{'transaction'}, $1 / 100);
+    } elsif ($buf =~ /^rpm install (\d+)%/) {
+        $tracker->set_task_progress($tasks{'installing'}, $1 / 100);
+    }
+
+    $buf = '';
+}
+

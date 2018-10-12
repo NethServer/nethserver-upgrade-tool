@@ -58,3 +58,11 @@ event_actions('nethserver-upgrade-tool-reset', qw(
 event_services('nethserver-upgrade-tool-reset', qw(
     crond start
 ));
+
+
+#
+# dcipaddr validator
+#
+validator_actions('dcipaddr', qw(
+    ipgreenandbridged 20
+));

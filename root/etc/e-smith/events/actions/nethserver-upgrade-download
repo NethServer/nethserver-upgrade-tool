@@ -20,6 +20,12 @@
 # along with NethServer.  If not, see COPYING.
 #
 
+workerpipe=$(mktemp -u)
+mkfifo -m 0600 ${workerpipe}
+/usr/libexec/nethserver/ptrack-upgrade-download <${workerpipe} &
+exec >${workerpipe}
+rm -f ${workerpipe}
+
 pkglist=/var/lib/nethserver/backup/package-list
 reposet=$(/sbin/e-smith/config getprop upgrade-tool RepoSet)
 yumugroot=/var/tmp/nethserver-upgrade-tool
@@ -55,7 +61,7 @@ fi
 
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-${reposet}bundle
 
-redhat-upgrade-tool --network 7 --instrepo=${reposet}-instrepo --force --enablerepo=${reposet}-\*
+redhat-upgrade-tool --network 7 --instrepo=${reposet}-instrepo --force --enablerepo=${reposet}-\* 2>&1
 if [[ $? != 0 ]]; then
     echo "[ERROR] the redhat-upgrade tool failed"
     exit 1
