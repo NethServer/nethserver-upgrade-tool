@@ -89,3 +89,6 @@ if [[ -d /var/lib/mysql ]]; then
     echo "[INFO] Remove MySQL databases"
     rm -rf /var/lib/mysql/*
 fi
+
+echo "[INFO] clean up Server Manager session and cache"
+rm -rf /var/cache/nethserver-httpd-admin/*
