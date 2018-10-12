@@ -67,3 +67,11 @@ event_services('nethserver-upgrade-tool-reset', qw(
 validator_actions('dcipaddr', qw(
     ipgreenandbridged 20
 ));
+
+#
+# diskspace validator
+#
+validator_actions('diskspace', qw(
+    upgradebootspace 10
+    upgradediskspace 20
+));

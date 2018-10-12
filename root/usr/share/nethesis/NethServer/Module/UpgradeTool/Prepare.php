@@ -44,6 +44,17 @@ class Prepare extends \Nethgui\Controller\AbstractController implements \Nethgui
         $this->declareParameter('UpgradeType', FALSE, array($this, 'readUpgradeType'));
     }
 
+    public function validate(\Nethgui\Controller\ValidationReportInterface $report)
+    {
+        parent::validate($report);
+        if($this->getRequest()->isMutation()) {
+            $v = $this->createValidator()->platform('diskspace');
+            if($v->evaluate('')) {
+                $report->addValidationErrorMessage($this, 'DiskSpace', 'DiskSpaceError');
+            }
+        }
+    }
+
     private function getNsdcBridgeDatasource()
     {
         static $interfaces;
