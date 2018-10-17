@@ -6,7 +6,7 @@ $L['UpgradeTool_Title'] = 'Upgrade tool';
 $L['Prepare_header'] = 'Prepare for the upgrade to ${0} 7';
 $L['Reset_header'] = 'Upgrade to ${0} 7';
 $L['ResetInfo1_text'] = 'The upgrade procedure will start upon the next system reboot and the progress will be available from the system console.';
-$L['ResetInfo2_text'] = 'It is possible abort and clean up the upgrade, to reset the system to the usual state';
+$L['ResetInfo2_text'] = 'It is possible to abort and clean up the upgrade, or to reset the system to the usual state';
 $L['DoUpgradeReset_label'] = 'Abort and clean up';
 $L['RebootModule_label'] = 'Reboot and upgrade';
 $L['UpgradeToolPrepareSuccess_notification'] = 'The upgrade procedure is ready to start';
@@ -32,3 +32,7 @@ $L['UpgradeTypeRemoteAd_error'] = 'Cannot upgrade the Active Directory member se
 
 $L['Reboot_header'] = 'Reboot and start upgrade';
 $L['RebootInfo_text'] = 'Reboot the system now';
+
+$L['DiskSpace_label'] = 'Disk space error';
+$L['valid_platform,diskspace,upgradediskspace,3'] = 'Not enough free space in the / (root) partition (${reason})';
+$L['valid_platform,diskspace,upgradebootspace,3'] = 'Not enough free space in the /boot partition (${reason})';

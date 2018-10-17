@@ -44,13 +44,26 @@ class Prepare extends \Nethgui\Controller\AbstractController implements \Nethgui
         $this->declareParameter('UpgradeType', FALSE, array($this, 'readUpgradeType'));
     }
 
+    /**
+     * Workaround for Nethgui bug: the "reason" placeholder has an unexpected syntax
+     */
+    private function fixFailureInfo($validator)
+    {
+        $failureInfo = $validator->getFailureInfo();
+        if(isset($failureInfo[0][1]['${reason}'])) {
+            $failureInfo[0][1]['reason'] = $failureInfo[0][1]['${reason}'];
+        }
+        return $failureInfo;
+    }
+
     public function validate(\Nethgui\Controller\ValidationReportInterface $report)
     {
         parent::validate($report);
         if($this->getRequest()->isMutation()) {
             $v = $this->createValidator()->platform('diskspace');
-            if($v->evaluate('')) {
-                $report->addValidationErrorMessage($this, 'DiskSpace', 'DiskSpaceError');
+            if( ! $v->evaluate($this->parameters['AdIpAddress'])) {
+                $failureInfo = $this->fixFailureInfo($v);
+                $report->addValidationErrorMessage($this, 'DiskSpace', $failureInfo[0][0], $failureInfo[0][1]);
             }
         }
     }
@@ -144,6 +157,8 @@ class Prepare extends \Nethgui\Controller\AbstractController implements \Nethgui
         parent::process();
         if($this->getRequest()->isMutation()) {
             $this->getPlatform()->signalEvent('nethserver-upgrade-tool-prepare &');
+        } elseif($this->getRequest()->hasParameter('prepareFailure')) {
+            $this->getPlatform()->signalEvent('nethserver-upgrade-tool-reset');
         }
     }
 

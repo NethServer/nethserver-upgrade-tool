@@ -20,9 +20,19 @@
 # along with NethServer.  If not, see COPYING.
 #
 
+withNsdc=$1
+
 uspace=$(rpm --queryformat='%{SIZE} %{NAME}\n' -qa | awk '{size += $1} END{print int(size/1024)+1}')
 fspace_root=$(df -P -k / | awk 'NR==2 {print $4}')
 
-if (($fspace_root < $uspace * 125 / 100)); then
+required=$((uspace * 110 / 100))
+
+if [[ -n ${withNsdc} ]]; then
+    # Add estimante NSDC chroot size
+    required=$((800000 + required))
+fi
+
+if ((fspace_root < required)); then
+    echo "Required disk space:" $((required/1024)) "MB"
     exit 3
 fi
