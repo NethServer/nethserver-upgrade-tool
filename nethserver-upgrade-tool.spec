@@ -1,6 +1,6 @@
 Name:           nethserver-upgrade-tool
-Version:        0.0.0
-Release:        1%{?dist}
+Version: 1.0.0
+Release: 1%{?dist}
 Summary:        NethServer upgrade tool
 
 License:        GPLv3
@@ -34,5 +34,9 @@ rm -rf %{buildroot}
 %doc README.rst
 
 %changelog
+* Wed Oct 31 2018 Davide Principi <davide.principi@nethesis.it> - 1.0.0-1
+- Live upgrade procedure - Feature #3446
+- Live upgrade procedure - NethServer/dev#5564
+
 * Mon Jul 30 2018 Davide Principi <davide.principi@nethesis.it> - 0.0.0
 - Initial version
