@@ -25,7 +25,8 @@ withNsdc=$1
 uspace=$(rpm --queryformat='%{SIZE} %{NAME}\n' -qa | awk '{size += $1} END{print int(size/1024)+1}')
 fspace_root=$(df -P -k / | awk 'NR==2 {print $4}')
 
-required=$((uspace * 110 / 100))
+# Esitimate size assuming: required < dwnld + uspace < uspace * 2
+required=$((uspace * 2))
 
 if [[ -n ${withNsdc} ]]; then
     # Add estimante NSDC chroot size
