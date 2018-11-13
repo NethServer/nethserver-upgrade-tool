@@ -20,4 +20,4 @@
 # along with NethServer.  If not, see COPYING.
 #
 
-exec package-cleanup --oldkernels --count=2
+exec package-cleanup -y --oldkernels --count=2
