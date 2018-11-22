@@ -28,6 +28,11 @@ if [[ -z ${nsdcIpAddress} || -z ${nsdcBridge} || -z ${sssdRealm} || -z ${reposet
     exit 0
 fi
 
+if [[ ! -f /var/lib/system-upgrade/package.list ]]; then
+    echo "[WARNING] Skipping the NSDC download because the system-upgrade download could have failed."
+    exit 0
+fi
+
 echo "[NOTICE] Download and prepare NSDC, the local Active Directory accounts provider"
 
 set -e -o pipefail
