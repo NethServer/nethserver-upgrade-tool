@@ -56,6 +56,21 @@ class Prepare extends \Nethgui\Controller\AbstractController implements \Nethgui
         return $failureInfo;
     }
 
+    protected function getDefaultWorkgroup()
+    {
+        static $defaultWorkgroup;
+        if(isset($defaultWorkgroup)) {
+            return $defaultWorkgroup;
+        }
+        $cdb = $this->getPlatform()->getDatabase('configuration');
+        if($cdb->getProp('smb', 'ServerRole') == 'PDC') {
+            $defaultWorkgroup = \Nethgui\array_head(explode('.', strtoupper($cdb->getType('DomainName'))));
+        } else {
+            $defaultWorkgroup = 'WORKGROUP';
+        }
+        return $defaultWorkgroup;
+    }
+
     public function validate(\Nethgui\Controller\ValidationReportInterface $report)
     {
         parent::validate($report);
@@ -64,6 +79,9 @@ class Prepare extends \Nethgui\Controller\AbstractController implements \Nethgui
             if( ! $v->evaluate($this->parameters['AdIpAddress'])) {
                 $failureInfo = $this->fixFailureInfo($v);
                 $report->addValidationErrorMessage($this, 'DiskSpace', $failureInfo[0][0], $failureInfo[0][1]);
+            }
+            if(strlen($this->parameters['AdWorkgroup']) > 15) {
+                $report->addValidationErrorMessage($this, 'AdWorkgroup', 'NetBIOS_length_validator');
             }
         }
     }
@@ -89,7 +107,9 @@ class Prepare extends \Nethgui\Controller\AbstractController implements \Nethgui
     public function bind(\Nethgui\Controller\RequestInterface $request)
     {
         parent::bind($request);
-        
+        if( ! $this->parameters['AdWorkgroup']) {
+            $this->parameters['AdWorkgroup'] = $this->getDefaultWorkgroup();
+        }
     }
     
     public function readUpgradeType()

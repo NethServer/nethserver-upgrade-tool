@@ -36,3 +36,4 @@ $L['RebootInfo_text'] = 'Reboot the system now';
 $L['DiskSpace_label'] = 'Disk space error';
 $L['valid_platform,diskspace,upgradediskspace,3'] = 'Not enough free space in the / (root) partition (${reason})';
 $L['valid_platform,diskspace,upgradebootspace,3'] = 'Not enough free space in the /boot partition (${reason})';
+$L['NetBIOS_length_validator'] = 'Maximum allowed length is 15 characters';
