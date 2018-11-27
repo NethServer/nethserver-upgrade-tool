@@ -29,7 +29,6 @@ use esmith::Build::CreateLinks  qw(:all);
 
 event_actions('nethserver-upgrade-tool-update', qw(
    initialize-default-databases 00
-   nethserver-upgrade-cleankernels 30
 ));
 
 
@@ -38,6 +37,7 @@ event_actions('nethserver-upgrade-tool-update', qw(
 #
 
 event_actions('nethserver-upgrade-tool-prepare', qw(
+    nethserver-upgrade-cleankernels 20
     nethserver-upgrade-download 30
     nethserver-upgrade-nsdc 40
     nethserver-upgrade-txcheck 80
