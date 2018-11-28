@@ -20,4 +20,9 @@
 # along with NethServer.  If not, see COPYING.
 #
 
-/usr/bin/systemctl mask httpd-admin.service
+units=(
+    httpd-admin.service
+    crond.service
+)
+
+/usr/bin/systemctl mask --runtime --now "${units[@]}"

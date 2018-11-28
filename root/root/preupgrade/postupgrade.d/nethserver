@@ -80,6 +80,9 @@ systemctl --root=/ preset-all
 echo "[INFO] Enable the upgrade service at first boot"
 systemctl --root=/ enable nethserver-system-upgrade.service
 
+echo "[INFO] Disable crond at first boot"
+systemctl --root=/ disable crond.service
+
 if [[ -d /var/lib/ldap ]]; then
     echo "[INFO] Remove OpenLDAP databases"
     find /var/lib/ldap -type f -delete

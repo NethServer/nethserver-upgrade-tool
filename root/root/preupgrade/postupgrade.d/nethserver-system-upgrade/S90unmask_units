@@ -20,5 +20,11 @@
 # along with NethServer.  If not, see COPYING.
 #
 
-/usr/bin/systemctl unmask httpd-admin.service
-/usr/bin/systemctl start  httpd-admin.service
+units=(
+    httpd-admin.service
+    crond.service
+)
+
+/usr/bin/systemctl unmask --runtime "${units[@]}"
+/usr/bin/systemctl enable "${units[@]}"
+/usr/bin/systemctl start "${units[@]}"
