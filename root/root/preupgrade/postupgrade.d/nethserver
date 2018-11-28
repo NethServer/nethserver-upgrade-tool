@@ -99,5 +99,10 @@ fi
 echo "[INFO] clean up anacron state"
 rm -f /var/spool/anacron/*
 
+if [[ -f /var/log/redis/redis-ntopng.log ]]; then
+    echo "[INFO] Fix redis-ntopng.log permissions"
+    chown -c redis:redis /var/log/redis/redis-ntopng.log
+fi
+
 echo "[INFO] clean up Server Manager session and cache"
 rm -rf /var/cache/nethserver-httpd-admin/*
