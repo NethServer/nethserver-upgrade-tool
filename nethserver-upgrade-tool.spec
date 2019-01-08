@@ -1,5 +1,5 @@
 Name:           nethserver-upgrade-tool
-Version: 1.0.0
+Version: 1.1.0
 Release: 1%{?dist}
 Summary:        NethServer upgrade tool
 
@@ -34,6 +34,11 @@ rm -rf %{buildroot}
 %doc README.rst
 
 %changelog
+* Tue Jan 08 2019 Davide Principi <davide.principi@nethesis.it> - 1.1.0-1
+- Ntopng fails to start after upgrade - Bug #3450 [NethServer 6]
+- IPsec daemon blocked after upgrade - Bug #3449 [NethServer 6]
+- Web filter uneffective after upgrade - Bug #3448 [NethServer 6]
+
 * Wed Oct 31 2018 Davide Principi <davide.principi@nethesis.it> - 1.0.0-1
 - Live upgrade procedure - Feature #3446
 - Live upgrade procedure - NethServer/dev#5564
