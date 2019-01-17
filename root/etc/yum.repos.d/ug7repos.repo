@@ -12,7 +12,7 @@ http_caching=none
 
 [ug7-base]
 name=CentOS-7 - Base
-mirrorlist=http://mirrorlist.centos.org/?release=7&arch=$basearch&repo=os&infra=$infra
+mirrorlist=http://mirrorlist.nethserver.org/?release=7&repo=ce-base&arch=$basearch
 #baseurl=http://mirror.centos.org/centos/7/os/$basearch/
 enabled=0
 gpgcheck=1
@@ -21,7 +21,7 @@ http_caching=none
 
 [ug7-updates]
 name=CentOS-7 - Updates
-mirrorlist=http://mirrorlist.centos.org/?release=7&arch=$basearch&repo=updates&infra=$infra
+mirrorlist=http://mirrorlist.nethserver.org/?release=7&repo=ce-updates&arch=$basearch
 #baseurl=http://mirror.centos.org/centos/7/updates/$basearch/
 enabled=0
 gpgcheck=1
@@ -30,7 +30,7 @@ http_caching=none
 
 [ug7-extras]
 name=CentOS-7 - Extras
-mirrorlist=http://mirrorlist.centos.org/?release=7&arch=$basearch&repo=extras&infra=$infra
+mirrorlist=http://mirrorlist.nethserver.org/?release=7&repo=ce-extras&arch=$basearch
 #baseurl=http://mirror.centos.org/centos/7/extras/$basearch/
 enabled=0
 gpgcheck=1
@@ -39,7 +39,7 @@ http_caching=none
 
 [ug7-centos-sclo-sclo]
 name=CentOS-7 - SCLo sclo
-baseurl=http://mirror.centos.org/centos/7/sclo/$basearch/sclo/
+baseurl=http://mirrorlist.nethserver.org/?release=7&repo=ce-sclo-sclo&arch=$basearch
 gpgcheck=1
 enabled=0
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ug7bundle
@@ -47,7 +47,7 @@ http_caching=none
 
 [ug7-centos-sclo-rh]
 name=CentOS-7 - SCLo rh
-baseurl=http://mirror.centos.org/centos/7/sclo/$basearch/rh/
+baseurl=http://mirrorlist.nethserver.org/?release=7&repo=ce-sclo-rh&arch=$basearch
 gpgcheck=1
 enabled=0
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ug7bundle
@@ -66,7 +66,7 @@ exclude=owncloud*
 
 [ug7-nethforge]
 name=NethForge 7
-mirrorlist=http://mirrorlist.nethserver.org/?release=7&repo=nethforge&arch=$basearch&nsrelease=$nsrelease
+mirrorlist=http://mirrorlist.nethserver.org/?release=7&repo=nethforge&arch=$basearch
 #baseurl=http://mirror.nethserver.org/nethserver/7/nethforge/$basearch/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ug7bundle
 enabled=0
@@ -75,7 +75,7 @@ http_caching=none
 
 [ug7-nethserver-base]
 name=NethServer-7 - Base
-mirrorlist=http://mirrorlist.nethserver.org/?release=7&repo=base&arch=$basearch&nsrelease=$nsrelease
+mirrorlist=http://mirrorlist.nethserver.org/?release=7&repo=base&arch=$basearch
 #baseurl=http://mirror.nethserver.org/nethserver/7/base/$basearch/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ug7bundle
 enabled=0
@@ -84,7 +84,7 @@ http_caching=none
 
 [ug7-nethserver-updates]
 name=NethServer-7 - Updates
-mirrorlist=http://mirrorlist.nethserver.org/?release=7&repo=updates&arch=$basearch&nsrelease=$nsrelease
+mirrorlist=http://mirrorlist.nethserver.org/?release=7&repo=updates&arch=$basearch
 #baseurl=http://mirror.nethserver.org/nethserver/7/updates/$basearch/
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ug7bundle
 enabled=0
