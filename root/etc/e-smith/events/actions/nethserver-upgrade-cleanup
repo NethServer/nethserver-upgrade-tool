@@ -27,3 +27,6 @@ rm -rf /var/tmp/nethserver-upgrade-tool/
 
 /sbin/e-smith/config setprop crond status enabled
 
+if [[ -d /etc/e-smith/events/post-backup-data ]]; then
+    /sbin/e-smith/signal-event post-backup-data
+fi
