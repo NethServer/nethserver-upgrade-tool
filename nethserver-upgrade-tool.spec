@@ -1,5 +1,5 @@
 Name:           nethserver-upgrade-tool
-Version: 1.1.0
+Version: 1.1.1
 Release: 1%{?dist}
 Summary:        NethServer upgrade tool
 
@@ -34,6 +34,10 @@ rm -rf %{buildroot}
 %doc README.rst
 
 %changelog
+* Mon May 06 2019 Davide Principi <davide.principi@nethesis.it> - 1.1.1-1
+- Backup device mounted after upgrade tool reset - Bug #3452 [NethServer 6]
+- SCLo repositories version lock - NethServer/dev#5689
+
 * Tue Jan 08 2019 Davide Principi <davide.principi@nethesis.it> - 1.1.0-1
 - Ntopng fails to start after upgrade - Bug #3450 [NethServer 6]
 - IPsec daemon blocked after upgrade - Bug #3449 [NethServer 6]
