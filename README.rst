@@ -165,7 +165,7 @@ of device out there.
 
 (1) install prerequisites ::
 
-        yum install redhat-upgrade-dracut dracut-fips dracut-network cryptsetup mdadm dmraid device-mapper-multipath fcoe-utils iscsi-initiator-utils
+        yum install createrepo redhat-upgrade-dracut dracut-fips dracut-network cryptsetup mdadm dmraid device-mapper-multipath fcoe-utils iscsi-initiator-utils
         sed 's/plymouth-label//g' $(rpm -qd redhat-upgrade-dracut | grep make-redhat-upgrade-repo) > make-redhat-upgrade-repo
 
 (2) create output directory and generate the initrd ::
