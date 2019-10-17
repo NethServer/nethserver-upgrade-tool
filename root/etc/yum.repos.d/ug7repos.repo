@@ -4,7 +4,7 @@
 
 [ug7-instrepo]
 name=Upgrade kernel repository
-baseurl=http://mirror.nethserver.org/ns6upgrade/
+mirrorlist=http://mirrorlist.nethserver.org/?release=7&repo=ns6upgrade&arch=$basearch
 enabled=0
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ug7bundle
