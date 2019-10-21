@@ -1,5 +1,5 @@
 Name:           nethserver-upgrade-tool
-Version: 1.1.1
+Version: 1.1.2
 Release: 1%{?dist}
 Summary:        NethServer upgrade tool
 
@@ -34,6 +34,9 @@ rm -rf %{buildroot}
 %doc README.rst
 
 %changelog
+* Mon Oct 21 2019 Davide Principi <davide.principi@nethesis.it> - 1.1.2-1
+- Serve ns6upgrade repository from mirrors - NethServer/dev#5867
+
 * Mon May 06 2019 Davide Principi <davide.principi@nethesis.it> - 1.1.1-1
 - Backup device mounted after upgrade tool reset - Bug #3452 [NethServer 6]
 - SCLo repositories version lock - NethServer/dev#5689
