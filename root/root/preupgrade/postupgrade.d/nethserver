@@ -93,6 +93,11 @@ if [[ -d /var/lib/mysql ]]; then
     rm -rf /var/lib/mysql/*
 fi
 
+if [[ -d /var/lib/pgsql/data ]]; then
+    echo "[INFO] Remove PostgreSQL databases"
+    rm -rf /var/lib/pgsql/data/*
+fi
+
 if [[ -d /etc/ipsec.d ]]; then
     echo "[INFO] Clean up old ipsec certificate databases"
     rm -f /etc/ipsec.d/*.db
