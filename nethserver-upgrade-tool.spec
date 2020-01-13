@@ -1,5 +1,5 @@
 Name:           nethserver-upgrade-tool
-Version: 1.1.2
+Version: 1.1.3
 Release: 1%{?dist}
 Summary:        NethServer upgrade tool
 
@@ -34,6 +34,9 @@ rm -rf %{buildroot}
 %doc README.rst
 
 %changelog
+* Mon Jan 13 2020 Davide Principi <davide.principi@nethesis.it> - 1.1.3-1
+- PostgreSQL start failed during distro upgrade - Bug #3454 [NethServer 6]
+
 * Mon Oct 21 2019 Davide Principi <davide.principi@nethesis.it> - 1.1.2-1
 - Serve ns6upgrade repository from mirrors - NethServer/dev#5867
 
