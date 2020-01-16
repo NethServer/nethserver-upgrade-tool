@@ -39,7 +39,8 @@ http_caching=none
 
 [ug7-centos-sclo-sclo]
 name=CentOS-7 - SCLo sclo
-baseurl=http://mirrorlist.nethserver.org/?release=7&repo=ce-sclo-sclo&arch=$basearch
+mirrorlist=http://mirrorlist.nethserver.org/?release=7&repo=ce-sclo-sclo&arch=$basearch
+#http://mirror.centos.org/centos/7/sclo/$basearch/sclo/
 gpgcheck=1
 enabled=0
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ug7bundle
@@ -47,7 +48,8 @@ http_caching=none
 
 [ug7-centos-sclo-rh]
 name=CentOS-7 - SCLo rh
-baseurl=http://mirrorlist.nethserver.org/?release=7&repo=ce-sclo-rh&arch=$basearch
+mirrorlist=http://mirrorlist.nethserver.org/?release=7&repo=ce-sclo-rh&arch=$basearch
+#baseurl=http://mirror.centos.org/centos/7/sclo/$basearch/rh/
 gpgcheck=1
 enabled=0
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ug7bundle
