@@ -40,7 +40,7 @@ http_caching=none
 [ug7-centos-sclo-sclo]
 name=CentOS-7 - SCLo sclo
 mirrorlist=http://mirrorlist.nethserver.org/?release=7&repo=ce-sclo-sclo&arch=$basearch
-#http://mirror.centos.org/centos/7/sclo/$basearch/sclo/
+#baseurl=http://mirror.centos.org/centos/7/sclo/$basearch/sclo/
 gpgcheck=1
 enabled=0
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ug7bundle
